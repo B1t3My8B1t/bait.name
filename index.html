@@ -181,25 +181,6 @@
     @keyframes up { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
     @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
-    /* ── TICKER ── */
-    .ticker {
-      overflow:hidden; border-top:1px solid var(--line);
-      border-bottom:1px solid var(--line);
-      padding:12px 0; background:var(--acid);
-    }
-    .ticker-track {
-      display:flex; width:max-content;
-      animation:tick 18s linear infinite;
-    }
-    @keyframes tick { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-    .ti {
-      font-family:'Bebas Neue',sans-serif;
-      font-size:15px; letter-spacing:3px; color:var(--black);
-      padding:0 32px; white-space:nowrap;
-      display:flex; align-items:center; gap:24px;
-    }
-    .ti::after { content:'✦'; font-size:8px; }
-
     /* ── SECTION BASE ── */
     section { padding:100px 48px; }
     .s-label {
@@ -314,23 +295,6 @@
       width:1px; height:80px; background:var(--line); margin-bottom:48px;
     }
 
-    /* ── TECH STACK ── */
-    .tech { border-top:1px solid var(--line); }
-    .tech-grid {
-      display:grid; grid-template-columns:repeat(4,1fr);
-      gap:1px; background:var(--line);
-    }
-    .tech-cell {
-      background:var(--black); padding:40px 32px;
-    }
-    .tech-icon { font-size:28px; margin-bottom:16px; }
-    .tech-name {
-      font-family:'Syne',sans-serif; font-weight:800;
-      font-size:18px; letter-spacing:-0.5px;
-      margin-bottom:8px;
-    }
-    .tech-desc { font-size:10px; color:var(--text); line-height:1.8; }
-
     /* ── CONTACT ── */
     .contact {
       border-top:1px solid var(--line);
@@ -399,7 +363,6 @@
       .hero-stats { display:none; }
       section { padding:64px 20px; }
       .products-grid { grid-template-columns:1fr; }
-      .tech-grid { grid-template-columns:1fr 1fr; }
       .contact { grid-template-columns:1fr; }
       .contact-left { border-right:none; border-bottom:1px solid var(--line); padding:48px 20px; }
       .contact-right { padding:48px 20px; }
@@ -462,11 +425,6 @@
     <div class="hstat"><div class="hstat-num">0</div><div class="hstat-label">Compromises</div></div>
     <div class="hstat"><div class="hstat-num">∞</div><div class="hstat-label">Ambition</div></div>
   </div>
-</div>
-
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-track" id="tick"></div>
 </div>
 
 <!-- PRODUCTS -->
@@ -544,34 +502,6 @@
   <div class="manifesto-line"></div>
 </section>
 
-<!-- TECH -->
-<section class="tech">
-  <div class="s-label reveal">How We Build</div>
-  <h2 class="s-title reveal">THE<br>STACK.</h2>
-  <div class="tech-grid">
-    <div class="tech-cell reveal">
-      <div class="tech-icon">🎮</div>
-      <div class="tech-name">Godot / Unity</div>
-      <div class="tech-desc">Native Android &amp; iOS game development. Lightweight builds, fast load times, works offline out of the box.</div>
-    </div>
-    <div class="tech-cell reveal">
-      <div class="tech-icon">🏦</div>
-      <div class="tech-name">Plaid API</div>
-      <div class="tech-desc">Secure bank account linking. Read-only access. Your money data stays yours.</div>
-    </div>
-    <div class="tech-cell reveal">
-      <div class="tech-icon">🤖</div>
-      <div class="tech-name">AI / Claude</div>
-      <div class="tech-desc">Intelligent spending analysis, plain-language summaries, and personalised financial insights.</div>
-    </div>
-    <div class="tech-cell reveal">
-      <div class="tech-icon">☁️</div>
-      <div class="tech-name">Cloudflare</div>
-      <div class="tech-desc">Edge-hosted, globally fast. Pages, R2 storage, and Workers power our infrastructure at bait.name.</div>
-    </div>
-  </div>
-</section>
-
 <!-- CONTACT -->
 <section class="contact" id="contact">
   <div class="contact-left">
@@ -625,14 +555,6 @@
   document.querySelectorAll('a,button').forEach(el => {
     el.addEventListener('mouseenter', () => cur.classList.add('big'));
     el.addEventListener('mouseleave', () => cur.classList.remove('big'));
-  });
-
-  // ticker
-  const items = ['BAIT IS THE NAME','Line Crush','BAIT Ledger','Android &amp; iOS','bait.name','Apps That Hook','AI Powered','Real Products'];
-  const t = document.getElementById('tick');
-  [...items,...items,...items].forEach(tx => {
-    const d = document.createElement('div');
-    d.className = 'ti'; d.textContent = tx; t.appendChild(d);
   });
 
   // reveal
