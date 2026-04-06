@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Line Crush — by BAIT IS THE NAME — In Development</title>
+  <meta name="description" content="Line Crush — the satisfying block puzzle game for Android. Drop pieces, clear lines, chain combos. Currently in development."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --black:  #080808;
+      --acid:   #c6ff00;
+      --white:  #f0f0ea;
+      --red:    #ff2d2d;
+      --orange: #ff7b2d;
+      --purple: #9b5de5;
+      --teal:   #00ffcc;
+      --mid:    #111;
+      --line:   #1c1c1c;
+      --text:   #777;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--black);color:var(--white);font-family:'Space Mono',monospace;overflow-x:hidden;cursor:none;}
+    #cur{position:fixed;width:10px;height:10px;background:var(--acid);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s;mix-blend-mode:difference;}
+    #cur.big{width:32px;height:32px;}
+    body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.025;}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(8,8,8,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);}
+    .nav-back{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-size:9px;letter-spacing:.25em;text-transform:uppercase;transition:color .2s;}
+    .nav-back:hover{color:var(--white);}
+    .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--white);}
+    .nav-logo em{color:var(--acid);font-style:normal;}
+    .nav-dl{background:var(--acid);color:var(--black);font-family:'Space Mono',monospace;font-weight:700;font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:9px 22px;text-decoration:none;transition:transform .2s;}
+    .nav-dl:hover{transform:translateY(-2px);}
+
+    /* HERO */
+    .hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:100px 48px 80px;gap:60px;position:relative;overflow:hidden;}
+
+    /* animated block rain bg */
+    .hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;}
+    .rain-block{position:absolute;border-radius:4px;opacity:.06;animation:fall linear infinite;}
+    @keyframes fall{from{transform:translateY(-80px) rotate(0deg)}to{transform:translateY(110vh) rotate(360deg)}}
+
+    .hero-left{position:relative;z-index:2;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--acid);margin-bottom:24px;opacity:0;animation:up .6s ease forwards .1s;}
+    .hero-eyebrow span{width:32px;height:1px;background:var(--acid);}
+
+    .hero-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,14vw,200px);line-height:.85;letter-spacing:2px;margin-bottom:28px;opacity:0;animation:up .7s ease forwards .25s;}
+    .hero-h1 .crush{color:var(--acid);display:block;}
+
+    .hero-desc{font-size:12px;line-height:2.1;color:var(--text);max-width:400px;margin-bottom:40px;opacity:0;animation:up .7s ease forwards .4s;}
+
+    .hero-actions{display:flex;gap:14px;flex-wrap:wrap;opacity:0;animation:up .7s ease forwards .55s;}
+    .btn-dl{display:inline-flex;align-items:center;gap:10px;background:var(--acid);color:var(--black);font-family:'Space Mono',monospace;font-weight:700;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:16px 28px;text-decoration:none;transition:transform .2s,box-shadow .2s;}
+    .btn-dl:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(198,255,0,.3);}
+    .btn-ghost{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);color:var(--white);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:16px 28px;text-decoration:none;transition:border-color .2s;}
+    .btn-ghost:hover{border-color:var(--white);}
+
+    .hero-meta{display:flex;gap:24px;flex-wrap:wrap;margin-top:32px;opacity:0;animation:up .7s ease forwards .7s;}
+    .meta-item{display:flex;flex-direction:column;gap:4px;}
+    .meta-label{font-size:8px;letter-spacing:.25em;color:var(--text);text-transform:uppercase;}
+    .meta-val{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;}
+
+    /* GAME VISUAL */
+    .hero-right{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;opacity:0;animation:fadeIn .9s ease forwards .6s;}
+    @keyframes up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+    .game-board-wrap{position:relative;}
+    .glow{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(198,255,0,.12) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:gpulse 3s ease-in-out infinite;}
+    @keyframes gpulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
+
+    .game-board{width:280px;background:var(--mid);border:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:12px;position:relative;box-shadow:0 40px 80px rgba(0,0,0,.6);}
+    .gb-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--line);}
+    .gb-score-label{font-size:7px;letter-spacing:.25em;color:var(--text);text-transform:uppercase;}
+    .gb-score{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--acid);line-height:1;}
+    .gb-level{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+
+    .grid-wrap{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;}
+    .g-cell{aspect-ratio:1;border-radius:3px;transition:transform .15s;}
+    .g-cell:hover{transform:scale(1.1);}
+    .c0{background:#181818;}
+    .c1{background:var(--acid);}
+    .c2{background:var(--red);}
+    .c3{background:var(--teal);}
+    .c4{background:var(--purple);}
+    .c5{background:var(--orange);}
+    .clearing{animation:clear .8s ease-in-out infinite;}
+    @keyframes clear{0%,60%,100%{opacity:1;transform:scale(1)}70%{opacity:.2;transform:scale(.8)}85%{opacity:1;transform:scale(1.08)}}
+
+    .gb-pieces{display:flex;justify-content:space-between;padding-top:12px;border-top:1px solid var(--line);}
+    .piece{display:grid;gap:2px;}
+    .p-cell{width:12px;height:12px;border-radius:2px;}
+
+    /* floating blocks */
+    .float-b{position:absolute;border-radius:6px;animation:fb 5s ease-in-out infinite;}
+    @keyframes fb{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-14px) rotate(20deg)}}
+
+    /* SECTION */
+    section{padding:90px 48px;}
+    .s-label{font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--acid);margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+    .s-label::before{content:'';width:28px;height:1px;background:var(--acid);}
+    .s-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6vw,80px);letter-spacing:2px;line-height:.95;margin-bottom:56px;}
+
+    /* HOW TO PLAY */
+    .htp{border-top:1px solid var(--line);}
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);}
+    .step{background:var(--mid);padding:40px 32px;position:relative;overflow:hidden;}
+    .step-num{font-family:'Bebas Neue',sans-serif;font-size:100px;color:rgba(198,255,0,.07);position:absolute;top:-16px;right:-8px;line-height:1;}
+    .step-icon{font-size:32px;margin-bottom:16px;}
+    .step-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.5px;margin-bottom:10px;}
+    .step-desc{font-size:11px;line-height:1.9;color:var(--text);}
+
+    /* FEATURES */
+    .features-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);}
+    .feat{background:var(--black);padding:36px 32px;border-bottom:none;}
+    .feat-tag{display:inline-block;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--acid);border:1px solid rgba(198,255,0,.3);padding:4px 10px;margin-bottom:16px;}
+    .feat-title{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.5px;margin-bottom:10px;}
+    .feat-desc{font-size:11px;line-height:1.9;color:var(--text);}
+
+    /* DOWNLOAD */
+    .dl-section{border-top:1px solid var(--line);background:var(--acid);padding:80px 48px;display:flex;justify-content:space-between;align-items:center;gap:40px;flex-wrap:wrap;}
+    .dl-left .dl-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,8vw,96px);letter-spacing:2px;line-height:.9;color:var(--black);margin-bottom:16px;}
+    .dl-left p{font-size:11px;color:rgba(0,0,0,.6);line-height:2;}
+    .dl-right{display:flex;flex-direction:column;gap:12px;align-items:flex-start;}
+    .dl-btn{display:inline-flex;align-items:center;gap:12px;background:var(--black);color:var(--white);font-family:'Space Mono',monospace;font-weight:700;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:16px 28px;text-decoration:none;transition:transform .2s,box-shadow .2s;}
+    .dl-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+    .dl-note{font-size:9px;color:rgba(0,0,0,.4);letter-spacing:.1em;}
+
+    /* FOOTER */
+    footer{border-top:1px solid var(--line);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+    .foot-back{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text);text-decoration:none;transition:color .2s;}
+    .foot-back:hover{color:var(--acid);}
+    .foot-copy{font-size:9px;color:#222;letter-spacing:.1em;}
+
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
+    .reveal.on{opacity:1;transform:translateY(0);}
+
+    @media(max-width:900px){
+      nav{padding:16px 20px;}
+      .hero{grid-template-columns:1fr;padding:90px 20px 60px;gap:40px;}
+      .hero-right{order:-1;}
+      .game-board{width:240px;}
+      section{padding:60px 20px;}
+      .steps{grid-template-columns:1fr 1fr;}
+      .features-grid{grid-template-columns:1fr;}
+      .dl-section{padding:60px 20px;flex-direction:column;}
+      footer{padding:24px 20px;}
+    }
+  </style>
+</head>
+<body>
+<div id="cur"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="../" class="nav-back">← BAIT Studio</a>
+  <div class="nav-logo">BAIT <em>IS THE</em> NAME</div>
+  <a href="#download" class="nav-dl" style="background:#1c1c1c;color:#555;cursor:default;">In Development</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg" id="heroBg"></div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow"><span></span>Mobile Game · Android · In Development</div>
+    <h1 class="hero-h1">
+      LINE
+      <span class="crush">CRUSH.</span>
+    </h1>
+    <p class="hero-desc">Drop block pieces onto the grid. Clear full lines — horizontal and vertical. Chain combos. Beat your score. No timer. No lives lost. Just one more move.</p>
+    <div class="hero-actions">
+      <a href="#download" class="btn-dl" style="background:#1c1c1c;color:#555;cursor:default;">Coming Soon</a>
+      <a href="#howtoplay" class="btn-ghost">How to Play</a>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item"><span class="meta-label">Platform</span><span class="meta-val">Android 6+</span></div>
+      <div class="meta-item"><span class="meta-label">Size</span><span class="meta-val">~40MB</span></div>
+      <div class="meta-item"><span class="meta-label">Price</span><span class="meta-val">Free</span></div>
+      <div class="meta-item"><span class="meta-label">Internet</span><span class="meta-val">Not Required</span></div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="game-board-wrap">
+      <div class="glow"></div>
+      <!-- floating accent blocks -->
+      <div class="float-b" style="width:24px;height:24px;background:var(--acid);top:-20px;left:-30px;animation-delay:0s;opacity:.7;"></div>
+      <div class="float-b" style="width:16px;height:16px;background:var(--red);top:40px;right:-24px;animation-delay:.8s;opacity:.6;"></div>
+      <div class="float-b" style="width:20px;height:20px;background:var(--teal);bottom:-10px;left:-20px;animation-delay:1.6s;opacity:.5;"></div>
+      <div class="float-b" style="width:12px;height:12px;background:var(--purple);bottom:40px;right:-16px;animation-delay:2.2s;opacity:.6;"></div>
+
+      <div class="game-board">
+        <div class="gb-header">
+          <div>
+            <div class="gb-score-label">Score</div>
+            <div class="gb-score" id="liveScore">8,640</div>
+          </div>
+          <div class="gb-level">
+            <div class="gb-score-label">Level</div>
+            <div class="gb-score" style="font-size:28px;color:var(--white);">12</div>
+          </div>
+        </div>
+        <div class="grid-wrap" id="gameGrid"></div>
+        <div class="gb-pieces" id="pieces"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW TO PLAY -->
+<section class="htp" id="howtoplay">
+  <div class="s-label reveal">The Rules</div>
+  <h2 class="s-title reveal">HOW TO<br>PLAY.</h2>
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">1</div>
+      <div class="step-icon">🟩</div>
+      <div class="step-title">Pick a Piece</div>
+      <div class="step-desc">Three block pieces are shown at the bottom. Choose one and drag it onto the 8×8 grid wherever it fits.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">2</div>
+      <div class="step-icon">📐</div>
+      <div class="step-title">Place It Smart</div>
+      <div class="step-desc">Think ahead. Position pieces to fill complete rows or columns. Partial lines score nothing.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">3</div>
+      <div class="step-icon">💥</div>
+      <div class="step-title">Clear Lines</div>
+      <div class="step-desc">Fill a complete row or column and it clears instantly. Clear multiple at once for a combo bonus.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">4</div>
+      <div class="step-icon">🏆</div>
+      <div class="step-title">Beat Your Score</div>
+      <div class="step-desc">Game ends when no piece fits on the board. Your score is your legacy. Can you top it?</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section style="border-top:1px solid var(--line);padding-top:90px;">
+  <div class="s-label reveal">Why Play</div>
+  <h2 class="s-title reveal">THE GOOD<br>STUFF.</h2>
+  <div class="features-grid">
+    <div class="feat reveal">
+      <div class="feat-tag">Core</div>
+      <div class="feat-title">No Time Pressure</div>
+      <div class="feat-desc">Take as long as you want. Line Crush is about strategy, not speed. Breathe. Think. Place.</div>
+    </div>
+    <div class="feat reveal">
+      <div class="feat-tag">Access</div>
+      <div class="feat-title">Fully Offline</div>
+      <div class="feat-desc">No wi-fi? No problem. The entire game runs on your device. Commute, flight, middle of nowhere — it plays.</div>
+    </div>
+    <div class="feat reveal">
+      <div class="feat-tag">Model</div>
+      <div class="feat-title">Free. Really Free.</div>
+      <div class="feat-desc">Download it. Play it. No paywalls, no lives system, no energy timers. Watch an ad to continue if you want — totally optional.</div>
+    </div>
+    <div class="feat reveal">
+      <div class="feat-tag">Privacy</div>
+      <div class="feat-title">No Account Needed</div>
+      <div class="feat-desc">We don't need your email. We don't need your name. Install and play in under 30 seconds.</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<div class="dl-section" id="download">
+  <div class="dl-left reveal">
+    <div class="dl-title">IN<br>DEVELOPMENT.</div>
+    <p>Line Crush is currently being built.<br>Android 6.0+ · Free · Watch this space.</p>
+  </div>
+  <div class="dl-right reveal">
+    <a class="dl-btn" style="background:#141414;color:#555;cursor:default;opacity:.6;">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v10M5 9l4 4 4-4M2 14h14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
+      APK · Not Yet Available
+    </a>
+    <a class="dl-btn" style="background:#141414;color:#555;cursor:default;opacity:.6;">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 3l12 6-12 6V3z" stroke="#555" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      Play Store · Coming Soon
+    </a>
+    <p class="dl-note">Drop us a follow — we'll announce when it drops.</p>
+  </div>
+</div>
+
+<footer>
+  <a href="../" class="foot-back">← Back to BAIT Studio</a>
+  <div class="foot-copy">© 2026 BAIT IS THE NAME — bait.name/line-crush — In Development</div>
+</footer>
+
+<script>
+  const cur = document.getElementById('cur');
+  document.addEventListener('mousemove', e => { cur.style.left=e.clientX+'px'; cur.style.top=e.clientY+'px'; });
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => cur.classList.add('big'));
+    el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+  });
+
+  // rain blocks background
+  const bg = document.getElementById('heroBg');
+  const cols = ['#c6ff00','#ff2d2d','#00ffcc','#9b5de5','#ff7b2d'];
+  for(let i=0;i<24;i++){
+    const b = document.createElement('div');
+    b.className = 'rain-block';
+    const size = 16 + Math.random()*32;
+    b.style.cssText = `width:${size}px;height:${size}px;background:${cols[Math.floor(Math.random()*cols.length)]};left:${Math.random()*100}%;animation-duration:${6+Math.random()*8}s;animation-delay:-${Math.random()*10}s;border-radius:${4+Math.random()*8}px;`;
+    bg.appendChild(b);
+  }
+
+  // game grid
+  const GRID = [
+    1,0,2,3,1,0,4,0,
+    0,1,1,0,2,3,0,5,
+    3,0,0,1,0,0,2,0,
+    0,2,3,0,1,1,0,4,
+    1,1,1,1,1,1,1,1, // clearing row
+    0,0,3,1,2,0,1,0,
+    2,1,0,0,3,1,0,2,
+    0,3,1,2,0,0,1,0,
+  ];
+  const gEl = document.getElementById('gameGrid');
+  GRID.forEach((c,i) => {
+    const d = document.createElement('div');
+    d.className = `g-cell c${c}`;
+    if(Math.floor(i/8)===4) d.classList.add('clearing');
+    gEl.appendChild(d);
+  });
+
+  // pieces
+  const pieceDefs = [
+    {shape:[[1,1],[1,0]],color:'#c6ff00'},
+    {shape:[[1,1,1]],color:'#ff2d2d'},
+    {shape:[[1,0],[1,1]],color:'#00ffcc'},
+  ];
+  const pEl = document.getElementById('pieces');
+  pieceDefs.forEach(p => {
+    const wrap = document.createElement('div');
+    wrap.className = 'piece';
+    wrap.style.gridTemplateColumns = `repeat(${p.shape[0].length},1fr)`;
+    p.shape.flat().forEach(c => {
+      const cell = document.createElement('div');
+      cell.className = 'p-cell';
+      cell.style.background = c ? p.color : 'transparent';
+      wrap.appendChild(cell);
+    });
+    pEl.appendChild(wrap);
+  });
+
+  // score ticker
+  let sc = 8640;
+  setInterval(() => { sc += Math.floor(Math.random()*200+50); document.getElementById('liveScore').textContent = sc.toLocaleString(); }, 2000);
+
+  // reveal
+  const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); }), {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

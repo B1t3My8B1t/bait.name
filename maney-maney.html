@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ManeyManey — Know Your Money</title>
+  <meta name="description" content="ManeyManey. Connect your bank, get AI-powered spending insights. Auto-categorised, tagged, explained. In development."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --black:  #060810;
+      --teal:   #00ffcc;
+      --white:  #eef0f5;
+      --acid:   #c6ff00;
+      --blue:   #1a6cff;
+      --mid:    #0d0f18;
+      --line:   #161a28;
+      --text:   #5a6075;
+      --card:   #0d0f1a;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--black);color:var(--white);font-family:'Space Mono',monospace;overflow-x:hidden;cursor:none;}
+    #cur{position:fixed;width:10px;height:10px;background:var(--teal);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s;mix-blend-mode:difference;}
+    #cur.big{width:32px;height:32px;}
+    body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.022;}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:18px 48px;background:rgba(6,8,16,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);}
+    .nav-back{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-size:9px;letter-spacing:.25em;text-transform:uppercase;transition:color .2s;}
+    .nav-back:hover{color:var(--white);}
+    .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--white);}
+    .nav-logo em{color:var(--teal);font-style:normal;}
+    .nav-notify{display:inline-flex;align-items:center;gap:8px;background:rgba(0,255,204,.1);color:var(--teal);border:1px solid rgba(0,255,204,.3);font-family:'Space Mono',monospace;font-weight:700;font-size:9px;letter-spacing:.18em;text-transform:uppercase;padding:9px 20px;text-decoration:none;transition:background .2s;}
+    .nav-notify:hover{background:rgba(0,255,204,.18);}
+
+    /* HERO */
+    .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 48px 80px;position:relative;overflow:hidden;}
+
+    /* animated aurora background */
+    .aurora{position:absolute;inset:0;z-index:0;overflow:hidden;}
+    .aura{position:absolute;border-radius:50%;filter:blur(100px);animation:auraMove ease-in-out infinite;}
+    @keyframes auraMove{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.1)}}
+
+    .hero-content{position:relative;z-index:2;max-width:900px;}
+    .hero-badge{display:inline-flex;align-items:center;gap:10px;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--teal);border:1px solid rgba(0,255,204,.3);padding:7px 16px;margin-bottom:32px;background:rgba(0,255,204,.05);opacity:0;animation:up .6s ease forwards .1s;}
+    .hero-badge::before{content:'';width:6px;height:6px;background:var(--teal);border-radius:50%;animation:blink 1.4s infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+    .hero-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(64px,11vw,160px);line-height:.88;letter-spacing:2px;margin-bottom:32px;opacity:0;animation:up .7s ease forwards .25s;}
+    .hero-h1 .em{color:var(--teal);display:block;}
+    .hero-h1 .dim{color:rgba(255,255,255,.2);font-size:.45em;letter-spacing:4px;display:block;margin-top:12px;}
+
+    .hero-desc{font-size:13px;line-height:2.2;color:var(--text);max-width:540px;margin-bottom:48px;opacity:0;animation:up .7s ease forwards .4s;}
+    .hero-desc strong{color:var(--white);}
+
+    .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;opacity:0;animation:up .7s ease forwards .55s;}
+    .cta-notify{display:inline-flex;align-items:center;gap:10px;background:var(--teal);color:var(--black);font-family:'Space Mono',monospace;font-weight:700;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:16px 28px;text-decoration:none;transition:transform .2s,box-shadow .2s;}
+    .cta-notify:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,255,204,.25);}
+    .cta-ghost{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);color:var(--white);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:16px 28px;text-decoration:none;transition:border-color .2s;}
+    .cta-ghost:hover{border-color:rgba(255,255,255,.3);}
+
+    @keyframes up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+
+    /* DASHBOARD MOCKUP */
+    .dashboard{position:absolute;right:-20px;top:50%;transform:translateY(-50%);width:clamp(300px,38vw,480px);z-index:2;opacity:0;animation:slideIn .9s ease forwards .7s;}
+    @keyframes slideIn{from{opacity:0;transform:translateY(-45%) translateX(40px)}to{opacity:1;transform:translateY(-50%) translateX(0)}}
+
+    .dash-card{background:var(--card);border:1px solid var(--line);border-radius:2px;padding:24px;margin-bottom:12px;position:relative;overflow:hidden;}
+    .dash-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;}
+    .dash-card.main::before{background:var(--teal);}
+    .dash-card.insight::before{background:var(--acid);}
+    .dash-card.cats::before{background:var(--blue);}
+
+    .dash-label{font-size:7px;letter-spacing:.25em;text-transform:uppercase;color:var(--text);margin-bottom:6px;}
+    .dash-val{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--white);line-height:1;letter-spacing:1px;}
+    .dash-sub{font-size:9px;color:var(--text);margin-top:4px;}
+    .dash-teal{color:var(--teal);}
+
+    .dash-row{display:flex;justify-content:space-between;align-items:flex-start;}
+
+    /* mini bar chart */
+    .mini-chart{display:flex;align-items:flex-end;gap:4px;height:48px;margin-top:12px;}
+    .bar{width:100%;border-radius:2px 2px 0 0;background:var(--teal);opacity:.7;transition:opacity .2s;}
+    .bar:hover{opacity:1;}
+    .bar.hi{opacity:1;background:var(--teal);}
+
+    /* categories */
+    .cat-list{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+    .cat-row{display:flex;align-items:center;gap:10px;}
+    .cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .cat-name{font-size:9px;color:var(--text);flex:1;text-transform:uppercase;letter-spacing:.15em;}
+    .cat-bar-wrap{width:80px;height:4px;background:var(--line);border-radius:2px;overflow:hidden;}
+    .cat-bar{height:100%;border-radius:2px;animation:barGrow 1.5s ease forwards;}
+    @keyframes barGrow{from{width:0}to{width:var(--w)}}
+    .cat-amt{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;min-width:48px;text-align:right;}
+
+    /* AI insight bubble */
+    .ai-bubble{background:rgba(198,255,0,.06);border:1px solid rgba(198,255,0,.15);border-radius:2px;padding:14px 16px;margin-top:12px;}
+    .ai-label{font-size:7px;letter-spacing:.25em;text-transform:uppercase;color:var(--acid);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+    .ai-label::before{content:'✦';font-size:8px;}
+    .ai-text{font-size:9px;line-height:1.8;color:rgba(255,255,255,.6);}
+    .ai-text strong{color:var(--white);}
+
+    /* SECTION */
+    section{padding:90px 48px;}
+    .s-label{font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:var(--teal);margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+    .s-label::before{content:'';width:28px;height:1px;background:var(--teal);}
+    .s-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6vw,80px);letter-spacing:2px;line-height:.95;margin-bottom:56px;}
+
+    /* FEATURES */
+    .feat-section{border-top:1px solid var(--line);}
+    .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);}
+    .feat-cell{background:var(--mid);padding:40px 32px;position:relative;overflow:hidden;}
+    .feat-cell::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--teal);transform:scaleX(0);transform-origin:left;transition:transform .4s ease;}
+    .feat-cell:hover::after{transform:scaleX(1);}
+    .feat-icon{font-size:28px;margin-bottom:20px;}
+    .feat-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.5px;margin-bottom:10px;}
+    .feat-desc{font-size:10px;line-height:2;color:var(--text);}
+    .feat-tag{display:inline-block;font-size:7px;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);border:1px solid rgba(0,255,204,.2);padding:3px 8px;margin-top:12px;}
+
+    /* HOW IT WORKS */
+    .hiw{border-top:1px solid var(--line);}
+    .hiw-steps{display:grid;grid-template-columns:repeat(4,1fr);position:relative;}
+    .hiw-steps::before{content:'';position:absolute;top:32px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent);z-index:0;}
+    .hiw-step{padding:0 24px;text-align:center;position:relative;z-index:1;}
+    .hiw-num{width:64px;height:64px;border:1px solid rgba(0,255,204,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--teal);background:var(--black);}
+    .hiw-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:-.5px;margin-bottom:10px;}
+    .hiw-desc{font-size:10px;line-height:1.9;color:var(--text);}
+
+    /* SECURITY */
+    .security{border-top:1px solid var(--line);background:var(--mid);}
+    .sec-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+    .sec-shield{font-size:80px;text-align:center;padding:40px;}
+    .sec-points{display:flex;flex-direction:column;gap:20px;}
+    .sec-point{display:flex;align-items:flex-start;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--line);}
+    .sec-point:last-child{border-bottom:none;}
+    .sec-check{color:var(--teal);font-size:16px;margin-top:2px;flex-shrink:0;}
+    .sec-point-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:4px;}
+    .sec-point-desc{font-size:10px;color:var(--text);line-height:1.9;}
+
+    /* WAITLIST */
+    .waitlist{border-top:1px solid var(--line);background:linear-gradient(135deg,var(--black) 0%,#061520 100%);padding:100px 48px;text-align:center;position:relative;overflow:hidden;}
+    .waitlist::before{content:'$';position:absolute;font-family:'Bebas Neue',sans-serif;font-size:40vw;color:rgba(0,255,204,.02);left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;letter-spacing:-10px;}
+    .wl-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,9vw,120px);letter-spacing:2px;line-height:.9;margin-bottom:20px;position:relative;z-index:1;}
+    .wl-title em{color:var(--teal);font-style:normal;}
+    .wl-sub{font-size:12px;color:var(--text);line-height:2;margin-bottom:40px;position:relative;z-index:1;}
+    .wl-form{display:flex;gap:0;max-width:480px;margin:0 auto;position:relative;z-index:1;}
+    .wl-input{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line);border-right:none;color:var(--white);font-family:'Space Mono',monospace;font-size:11px;padding:16px 20px;outline:none;transition:border-color .2s;}
+    .wl-input:focus{border-color:rgba(0,255,204,.4);}
+    .wl-input::placeholder{color:var(--text);}
+    .wl-btn{background:var(--teal);color:var(--black);font-family:'Space Mono',monospace;font-weight:700;font-size:10px;letter-spacing:.15em;text-transform:uppercase;padding:16px 24px;border:none;cursor:pointer;transition:opacity .2s;white-space:nowrap;}
+    .wl-btn:hover{opacity:.9;}
+    .wl-note{font-size:9px;color:#2a3040;margin-top:12px;letter-spacing:.1em;position:relative;z-index:1;}
+
+    /* FOOTER */
+    footer{border-top:1px solid var(--line);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+    .foot-back{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text);text-decoration:none;transition:color .2s;}
+    .foot-back:hover{color:var(--teal);}
+    .foot-copy{font-size:9px;color:#1a1e2a;letter-spacing:.1em;}
+
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
+    .reveal.on{opacity:1;transform:translateY(0);}
+
+    @media(max-width:900px){
+      nav{padding:16px 20px;}
+      .hero{padding:100px 20px 60px;}
+      .dashboard{display:none;}
+      section{padding:60px 20px;}
+      .feat-grid{grid-template-columns:1fr;}
+      .hiw-steps{grid-template-columns:1fr 1fr;gap:32px;}
+      .hiw-steps::before{display:none;}
+      .sec-grid{grid-template-columns:1fr;}
+      .sec-shield{display:none;}
+      .waitlist{padding:60px 20px;}
+      .wl-form{flex-direction:column;}
+      .wl-input{border-right:1px solid var(--line);}
+      footer{padding:24px 20px;flex-direction:column;align-items:flex-start;}
+    }
+  </style>
+</head>
+<body>
+<div id="cur"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="../" class="nav-back">← BAIT Studio</a>
+  <div class="nav-logo">MANEY<em>MANEY</em></div>
+  <a href="#waitlist" class="nav-notify">Get Early Access</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="aurora">
+    <div class="aura" style="width:600px;height:600px;background:rgba(0,255,204,.04);top:-100px;right:-100px;animation-duration:8s;"></div>
+    <div class="aura" style="width:400px;height:400px;background:rgba(26,108,255,.04);bottom:-50px;left:10%;animation-duration:12s;animation-delay:-4s;"></div>
+    <div class="aura" style="width:300px;height:300px;background:rgba(198,255,0,.03);top:40%;left:30%;animation-duration:10s;animation-delay:-2s;"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">Coming Soon — Android & Web</div>
+    <h1 class="hero-h1">
+      KNOW
+      <span class="em">YOUR</span>
+      <span class="em">MONEY.</span>
+      <span class="dim">AI-Powered Finance · Plaid Connected</span>
+    </h1>
+    <p class="hero-desc">
+      <strong>ManeyManey</strong> connects to your bank account, reads your transactions,
+      and gives you an <strong>AI-powered breakdown</strong> of where your money actually goes.
+      No spreadsheets. No guesswork. Just clarity.
+    </p>
+    <div class="hero-ctas">
+      <a href="#waitlist" class="cta-notify">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1l1.5 4h4L9 7.5l1.5 4L7 9 3.5 11.5 5 7.5 1.5 5h4z" stroke="#080810" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        Join the Waitlist
+      </a>
+      <a href="#howworks" class="cta-ghost">How It Works</a>
+    </div>
+  </div>
+
+  <!-- DASHBOARD MOCKUP -->
+  <div class="dashboard">
+    <div class="dash-card main">
+      <div class="dash-row">
+        <div>
+          <div class="dash-label">Total Spent · This Month</div>
+          <div class="dash-val">$2,847</div>
+          <div class="dash-sub dash-teal">↓ 12% from last month</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="dash-label">Savings Rate</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--teal);">24%</div>
+        </div>
+      </div>
+      <div class="mini-chart" id="miniChart"></div>
+    </div>
+
+    <div class="dash-card cats">
+      <div class="dash-label">Spending by Category</div>
+      <div class="cat-list">
+        <div class="cat-row">
+          <div class="cat-dot" style="background:#00ffcc;"></div>
+          <div class="cat-name">Groceries</div>
+          <div class="cat-bar-wrap"><div class="cat-bar" style="background:#00ffcc;--w:70%;"></div></div>
+          <div class="cat-amt">$612</div>
+        </div>
+        <div class="cat-row">
+          <div class="cat-dot" style="background:#1a6cff;"></div>
+          <div class="cat-name">Dining</div>
+          <div class="cat-bar-wrap"><div class="cat-bar" style="background:#1a6cff;--w:52%;"></div></div>
+          <div class="cat-amt">$480</div>
+        </div>
+        <div class="cat-row">
+          <div class="cat-dot" style="background:#c6ff00;"></div>
+          <div class="cat-name">Transport</div>
+          <div class="cat-bar-wrap"><div class="cat-bar" style="background:#c6ff00;--w:38%;"></div></div>
+          <div class="cat-amt">$340</div>
+        </div>
+        <div class="cat-row">
+          <div class="cat-dot" style="background:#ff2d2d;"></div>
+          <div class="cat-name">Subscriptions</div>
+          <div class="cat-bar-wrap"><div class="cat-bar" style="background:#ff2d2d;--w:25%;"></div></div>
+          <div class="cat-amt">$218</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card insight">
+      <div class="ai-label">AI Insight</div>
+      <div class="ai-text">You spent <strong>43% more on dining</strong> in the last 2 weeks compared to your monthly average. Your <strong>biggest saving opportunity</strong> is your 6 unused subscriptions totalling $84/mo.</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="hiw" id="howworks">
+  <div class="s-label reveal">The Flow</div>
+  <h2 class="s-title reveal">HOW IT<br>WORKS.</h2>
+  <div class="hiw-steps">
+    <div class="hiw-step reveal">
+      <div class="hiw-num">01</div>
+      <div class="hiw-title">Connect Your Bank</div>
+      <div class="hiw-desc">Link your account securely via Plaid — the same technology trusted by thousands of apps. Read-only access. We never touch your money.</div>
+    </div>
+    <div class="hiw-step reveal">
+      <div class="hiw-num">02</div>
+      <div class="hiw-title">Auto-Categorise</div>
+      <div class="hiw-desc">Every transaction is automatically sorted into categories. Add your own labels and tags to anything that doesn't fit.</div>
+    </div>
+    <div class="hiw-step reveal">
+      <div class="hiw-num">03</div>
+      <div class="hiw-title">Get AI Insights</div>
+      <div class="hiw-desc">Our AI reads your patterns, spots anomalies, and tells you in plain English what's happening with your money — and what to do about it.</div>
+    </div>
+    <div class="hiw-step reveal">
+      <div class="hiw-num">04</div>
+      <div class="hiw-title">Take Control</div>
+      <div class="hiw-desc">See monthly trends, track saving goals, and get a weekly digest of your financial health. No jargon. No noise.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="feat-section">
+  <div class="s-label reveal">Features</div>
+  <h2 class="s-title reveal">WHAT YOU<br>GET.</h2>
+  <div class="feat-grid">
+    <div class="feat-cell reveal">
+      <div class="feat-icon">🏦</div>
+      <div class="feat-title">Plaid Integration</div>
+      <div class="feat-desc">Connect any major bank instantly. Secure, read-only, and revokable at any time. Your credentials never touch our servers.</div>
+      <div class="feat-tag">Secure</div>
+    </div>
+    <div class="feat-cell reveal">
+      <div class="feat-icon">🤖</div>
+      <div class="feat-title">AI Overview</div>
+      <div class="feat-desc">Weekly and monthly AI-generated summaries of your spending, saving rate, and biggest changes — written in plain language.</div>
+      <div class="feat-tag">Powered by Claude</div>
+    </div>
+    <div class="feat-cell reveal">
+      <div class="feat-icon">🏷️</div>
+      <div class="feat-title">Custom Tags & Labels</div>
+      <div class="feat-desc">Auto-categorisation is smart, but you're smarter. Tag transactions your way, create custom categories, and label recurring costs.</div>
+      <div class="feat-tag">Flexible</div>
+    </div>
+    <div class="feat-cell reveal">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">Spending Trends</div>
+      <div class="feat-desc">Visual breakdowns of where your money goes week-by-week and month-by-month. Spot the patterns before they become problems.</div>
+      <div class="feat-tag">Visual</div>
+    </div>
+    <div class="feat-cell reveal">
+      <div class="feat-icon">🔔</div>
+      <div class="feat-title">Smart Alerts</div>
+      <div class="feat-desc">Get notified when spending in a category spikes, when you hit a budget threshold, or when the AI spots something worth your attention.</div>
+      <div class="feat-tag">Proactive</div>
+    </div>
+    <div class="feat-cell reveal">
+      <div class="feat-icon">📱</div>
+      <div class="feat-title">Android First</div>
+      <div class="feat-desc">Native Android app. Fast, offline-capable for read data, and designed to be your daily financial companion — not a chore.</div>
+      <div class="feat-tag">Android</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section class="security">
+  <div class="s-label reveal">Your Data</div>
+  <h2 class="s-title reveal">BUILT ON<br>TRUST.</h2>
+  <div class="sec-grid">
+    <div class="sec-shield reveal" style="font-size:100px;">🔒</div>
+    <div class="sec-points">
+      <div class="sec-point reveal">
+        <div class="sec-check">✦</div>
+        <div>
+          <div class="sec-point-title">Read-Only Bank Access</div>
+          <div class="sec-point-desc">Plaid gives us read-only access to your transaction history. We cannot move money, initiate payments, or make any changes to your account — ever.</div>
+        </div>
+      </div>
+      <div class="sec-point reveal">
+        <div class="sec-check">✦</div>
+        <div>
+          <div class="sec-point-title">Your Credentials Never Leave Plaid</div>
+          <div class="sec-point-desc">Your banking username and password are entered directly into Plaid's encrypted vault. BAIT Finance never sees them.</div>
+        </div>
+      </div>
+      <div class="sec-point reveal">
+        <div class="sec-check">✦</div>
+        <div>
+          <div class="sec-point-title">Revoke Access Anytime</div>
+          <div class="sec-point-desc">Disconnect your bank in one tap. All your data is deleted from our systems immediately — no retention period, no archive.</div>
+        </div>
+      </div>
+      <div class="sec-point reveal">
+        <div class="sec-check">✦</div>
+        <div>
+          <div class="sec-point-title">AI Runs on Anonymised Data</div>
+          <div class="sec-point-desc">When your transactions are analysed by AI, merchant names and personal identifiers are stripped before processing.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="waitlist" id="waitlist">
+  <div class="s-label reveal" style="justify-content:center;">
+    <span style="width:28px;height:1px;background:var(--teal);display:inline-block;"></span>
+    Early Access
+    <span style="width:28px;height:1px;background:var(--teal);display:inline-block;"></span>
+  </div>
+  <div class="wl-title reveal">BE FIRST<br>TO <em>KNOW</em>.</div>
+  <p class="wl-sub reveal">BAIT Finance is in development. Drop your email<br>and we'll notify you the moment it launches.</p>
+  <div class="wl-form reveal">
+    <input class="wl-input" type="email" placeholder="your@email.com" id="emailInput"/>
+    <button class="wl-btn" onclick="handleSignup()">Notify Me</button>
+  </div>
+  <p class="wl-note reveal" id="wl-msg">No spam. Just a launch notification when it's ready.</p>
+</section>
+
+<footer>
+  <a href="../" class="foot-back">← Back to BAIT Studio</a>
+  <div class="foot-copy">© 2026 BAIT IS THE NAME — bait.name/maney-maney</div>
+</footer>
+
+<script>
+  const cur = document.getElementById('cur');
+  document.addEventListener('mousemove', e => { cur.style.left=e.clientX+'px'; cur.style.top=e.clientY+'px'; });
+  document.querySelectorAll('a,button,input').forEach(el => {
+    el.addEventListener('mouseenter', () => cur.classList.add('big'));
+    el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+  });
+
+  // mini chart bars
+  const heights = [30,45,60,40,75,55,90,65,80,48,70,100];
+  const chart = document.getElementById('miniChart');
+  heights.forEach((h,i) => {
+    const b = document.createElement('div');
+    b.className = 'bar' + (i===11?' hi':'');
+    b.style.cssText = `height:${h}%;animation-delay:${i*.06}s;`;
+    chart.appendChild(b);
+  });
+
+  // waitlist
+  function handleSignup(){
+    const v = document.getElementById('emailInput').value;
+    const msg = document.getElementById('wl-msg');
+    if(v && v.includes('@')){
+      msg.textContent = "✦ You're on the list. We'll be in touch.";
+      msg.style.color = 'var(--teal)';
+      document.getElementById('emailInput').value = '';
+    } else {
+      msg.textContent = 'Please enter a valid email.';
+      msg.style.color = '#ff2d2d';
+    }
+  }
+  document.getElementById('emailInput').addEventListener('keydown', e => { if(e.key==='Enter') handleSignup(); });
+
+  // reveal
+  const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); }), {threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
