@@ -315,18 +315,46 @@
   });
 
   // waitlist
-  function handleSignup(){
-    const v = document.getElementById('emailInput').value;
+  const WORKER_URL = 'https://bait-waitlist.bait.name';
+
+  async function handleSignup() {
+    const input = document.getElementById('emailInput');
     const msg = document.getElementById('wl-msg');
-    if(v && v.includes('@')){
-      msg.textContent = "✦ You're on the list. We'll be in touch.";
-      msg.style.color = 'var(--teal)';
-      document.getElementById('emailInput').value = '';
-    } else {
+    const btn = document.querySelector('.wl-btn');
+    const v = input.value.trim();
+
+    if (!v || !v.includes('@')) {
       msg.textContent = 'Please enter a valid email.';
       msg.style.color = '#ff2d2d';
+      return;
+    }
+
+    btn.textContent = '...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: v }),
+      });
+
+      if (res.ok) {
+        msg.textContent = "✦ You're on the list. We'll be in touch.";
+        msg.style.color = 'var(--teal)';
+        input.value = '';
+      } else {
+        throw new Error();
+      }
+    } catch {
+      msg.textContent = 'Something went wrong. Try again.';
+      msg.style.color = '#ff2d2d';
+    } finally {
+      btn.textContent = 'Notify Me';
+      btn.disabled = false;
     }
   }
+
   document.getElementById('emailInput').addEventListener('keydown', e => { if(e.key==='Enter') handleSignup(); });
 
   // reveal
