@@ -1,0 +1,43 @@
+# Claude Code — never commit to public repo
+CLAUDE.md
+.claude/
+
+# Studio-internal
+branding.html
+
+# Environment & secrets
+.env
+.env.*
+.env.local
+.env.production
+
+# OS junk
+Thumbs.db
+Desktop.ini
+.DS_Store
+._*
+
+# Editors & IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (if ever added)
+node_modules/
+npm-debug.log*
+yarn-error.log
+
+# Build artifacts
+dist/
+.cache/
+*.map
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.bak
+*.orig
