@@ -289,6 +289,44 @@
       pointer-events:none; line-height:1;
     }
 
+    /* Featured product (Line Crush) */
+    .prod-card.featured {
+      grid-column:1 / -1;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:0;
+      border:1px solid rgba(198,255,0,.15);
+      box-shadow:0 0 40px rgba(198,255,0,.06);
+    }
+    .prod-card.featured .prod-featured-left {
+      display:flex; flex-direction:column; justify-content:center;
+    }
+    .prod-card.featured .prod-featured-right {
+      display:flex; flex-direction:column; justify-content:center;
+      padding:40px;
+      border-left:1px solid var(--line);
+    }
+    .prod-card.featured .prod-name {
+      font-size:clamp(48px,6vw,72px);
+    }
+    .prod-featured-cta {
+      display:inline-flex; align-items:center; gap:10px;
+      background:var(--acid); color:var(--black);
+      font-family:'Space Mono',monospace; font-weight:700;
+      font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+      padding:14px 28px; text-decoration:none; width:fit-content;
+      transition:transform .2s, box-shadow .2s;
+      margin-top:24px;
+    }
+    @media(hover:hover) {
+      .prod-featured-cta:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(198,255,0,.25); }
+    }
+    .prod-live-dot {
+      width:8px; height:8px; border-radius:50%;
+      background:var(--acid); display:inline-block;
+      animation:blink 1.4s infinite; margin-right:4px;
+    }
+
     /* MANIFESTO */
     .manifesto {
       border-top:1px solid var(--line); background:var(--mid);
@@ -349,6 +387,7 @@
       :root { --px:32px; }
       .products-grid { grid-template-columns:1fr 1fr; }
       .prod-card .bg-num { font-size:100px; }
+      .prod-card.featured { grid-column:1 / -1; }
     }
 
     /* ── Mobile ── */
@@ -369,6 +408,8 @@
       .hero-stats-mobile { display:flex; }
       .products-grid { grid-template-columns:1fr; }
       .prod-card { padding:36px 24px; }
+      .prod-card.featured { grid-template-columns:1fr; }
+      .prod-card.featured .prod-featured-right { border-left:none; border-top:1px solid var(--line); padding:24px 0 0; }
       .prod-card .bg-num { font-size:80px; }
       .prod-name { font-size:48px; }
       .s-title { margin-bottom:40px; }
@@ -460,28 +501,35 @@
   <h2 class="s-title reveal">OUR<br>PRODUCTS.</h2>
   <div class="products-grid">
 
-    <a href="line-crush.html" class="prod-card game reveal">
+    <a href="line-crush.html" class="prod-card game featured reveal">
       <div class="bg-num">01</div>
-      <div class="prod-status live">Play Now</div>
-      <div class="prod-cat">Puzzle Game · Web · Android · iOS</div>
-      <div class="prod-name">LINE<br>CRUSH</div>
-      <p class="prod-desc">A satisfying block puzzle game. Drop pieces, clear lines, chain combos. Offline-first, no login, no nonsense — just the next move.</p>
-      <div class="prod-tags">
-        <span class="prod-tag">Puzzle</span>
-        <span class="prod-tag">Offline</span>
-        <span class="prod-tag">Free</span>
-        <span class="prod-tag">Web</span>
-        <span class="prod-tag">Android</span>
-        <span class="prod-tag">iOS</span>
+      <div class="prod-featured-left">
+        <div class="prod-status live">Play Now</div>
+        <div class="prod-cat">Puzzle Game · Web · Android · iOS</div>
+        <div class="prod-name">LINE<br>CRUSH</div>
+        <div class="prod-featured-cta">
+          <span class="prod-live-dot"></span>
+          Play Line Crush — It's Live ↗
+        </div>
       </div>
-      <div class="prod-arrow">↗</div>
+      <div class="prod-featured-right">
+        <p class="prod-desc" style="margin-bottom:24px;">A satisfying block puzzle game. Drop pieces, clear lines, chain combos. Offline-first, no login, no nonsense — just the next move.</p>
+        <div class="prod-tags">
+          <span class="prod-tag">Puzzle</span>
+          <span class="prod-tag">Offline</span>
+          <span class="prod-tag">Free</span>
+          <span class="prod-tag">Web</span>
+          <span class="prod-tag">Android</span>
+          <span class="prod-tag">iOS</span>
+        </div>
+      </div>
     </a>
 
-    <a href="ledger.html" class="prod-card finance reveal">
+    <div class="prod-card future-card reveal">
       <div class="bg-num">02</div>
-      <div class="prod-status coming">In Development</div>
+      <div class="prod-status future">In the Lab</div>
       <div class="prod-cat">Finance App · Android · iOS · Web</div>
-      <div class="prod-name">LEDGER</div>
+      <div class="prod-name" style="color:var(--muted);">LEDGER</div>
       <p class="prod-desc">Connect your bank. Get AI-powered insights on your spending. Auto-categorised, tagged, and explained in plain language — not spreadsheets.</p>
       <div class="prod-tags">
         <span class="prod-tag">Plaid</span>
@@ -490,8 +538,7 @@
         <span class="prod-tag">Android</span>
         <span class="prod-tag">iOS</span>
       </div>
-      <div class="prod-arrow" style="color:var(--teal);">↗</div>
-    </a>
+    </div>
 
     <div class="prod-card future-card reveal">
       <div class="bg-num">03</div>
