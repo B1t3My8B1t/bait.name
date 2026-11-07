@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BAIT IS THE NAME — App Studio</title>
-  <meta name="description" content="BAIT is the NAME. We build apps people can't put down. Games, tools, and financial tech for the real world."/>
+  <title>BAIT IS THE NAME — Bruno Alexandre</title>
+  <meta name="description" content="Hi, I'm Bruno. I like to help and build things. Games, apps, and free help for anyone who needs it."/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
@@ -35,7 +34,7 @@
       overflow-x: hidden;
     }
 
-    /* CUSTOM CURSOR — desktop only */
+    /* CUSTOM CURSOR */
     #cur {
       position:fixed; width:10px; height:10px;
       background:var(--acid); border-radius:50%;
@@ -242,7 +241,7 @@
       letter-spacing:2px; line-height:.95; margin-bottom:64px;
     }
 
-    /* PRODUCTS */
+    /* PROJECTS */
     .products { border-top:1px solid var(--line); }
     .products-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); }
     .prod-card {
@@ -257,6 +256,27 @@
       .prod-card:hover { background:#161616; }
       .prod-card:hover .prod-arrow { transform:translate(4px,-4px); }
     }
+
+    /* Full-width CTA card */
+    .prod-card.full-width {
+      grid-column: 1 / -1;
+      flex-direction:row; align-items:center; justify-content:space-between;
+      padding:40px 48px;
+    }
+    .prod-card.full-width .prod-left { flex:1; }
+    .prod-card.full-width .prod-cta-inline {
+      background:var(--acid); color:var(--black);
+      font-family:'Space Mono',monospace; font-weight:700;
+      font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+      padding:16px 32px; text-decoration:none;
+      transition:transform .2s, box-shadow .2s;
+      display:inline-flex; align-items:center; gap:10px;
+      white-space:nowrap; flex-shrink:0;
+    }
+    @media(hover:hover) {
+      .prod-card.full-width .prod-cta-inline:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(198,255,0,.25); }
+    }
+
     .prod-status {
       font-size:8px; letter-spacing:.25em; text-transform:uppercase;
       padding:5px 12px; border:1px solid;
@@ -265,6 +285,7 @@
     }
     .prod-status.live { color:var(--acid); border-color:var(--acid); }
     .prod-status.coming { color:var(--gold); border-color:var(--gold); }
+    .prod-status.ongoing { color:var(--teal); border-color:var(--teal); }
     .prod-status.future { color:var(--muted); border-color:var(--muted); }
     .prod-status::before {
       content:''; width:5px; height:5px;
@@ -280,8 +301,11 @@
     .prod-arrow { font-size:20px; color:var(--acid); transition:transform .2s; align-self:flex-start; }
     .prod-card::before { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; }
     .prod-card.game::before { background:var(--acid); }
-    .prod-card.finance::before { background:var(--teal); }
-    .prod-card.future-card::before { background:var(--muted); }
+    .prod-card.app::before { background:var(--teal); }
+    .prod-card.probono::before { background:var(--teal); }
+    .prod-card.open-card::before { background:var(--muted); }
+    .prod-card.full-width::before { height:0; }
+    .prod-card.full-width { border-top:2px solid var(--muted); }
     .prod-card .bg-num {
       position:absolute; bottom:-20px; right:-10px;
       font-family:'Bebas Neue',sans-serif;
@@ -290,9 +314,7 @@
     }
 
     /* Featured product (Line Crush) */
-    .prod-card.featured {
-      box-shadow:0 0 30px rgba(198,255,0,.05);
-    }
+    .prod-card.featured { box-shadow:0 0 30px rgba(198,255,0,.05); }
     .prod-card.featured::after {
       content:'LIVE NOW';
       position:absolute; top:20px; right:-35px;
@@ -323,20 +345,52 @@
       animation:blink 1.4s infinite; margin-right:2px;
     }
 
-    /* MANIFESTO */
-    .manifesto {
+    /* ABOUT */
+    .about {
       border-top:1px solid var(--line); background:var(--mid);
       display:flex; flex-direction:column; align-items:center; text-align:center;
     }
-    .manifesto-quote {
+    .about-quote {
       font-family:'Bebas Neue',sans-serif;
-      font-size:clamp(36px,8vw,110px);
+      font-size:clamp(48px,9vw,120px);
       letter-spacing:2px; line-height:.92;
-      max-width:1000px; margin-bottom:40px;
+      max-width:900px; margin-bottom:40px;
     }
-    .manifesto-quote em { color:var(--acid); font-style:normal; }
-    .manifesto-sub { font-size:11px; color:var(--text); line-height:2; max-width:480px; margin-bottom:48px; }
-    .manifesto-line { width:1px; height:80px; background:var(--line); margin-bottom:48px; }
+    .about-body { font-size:12px; color:var(--text); line-height:2; max-width:520px; margin-bottom:32px; }
+    .about-body em { color:var(--white); font-style:normal; }
+    .about-tags {
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+      margin-bottom:32px;
+    }
+    .about-tag {
+      font-size:8px; letter-spacing:.2em; padding:6px 14px;
+      border:1px solid var(--line); color:var(--acid); text-transform:uppercase;
+    }
+    .about-sub { font-size:10px; color:var(--muted); line-height:1.9; max-width:440px; }
+    .about-line { width:1px; height:80px; background:var(--line); margin-bottom:48px; }
+
+    /* SUPPORT */
+    .support {
+      border-top:1px solid var(--line);
+      display:flex; flex-direction:column; align-items:center; text-align:center;
+      padding:80px var(--px);
+    }
+    .support .s-label { justify-content:center; }
+    .support .s-label::before { display:none; }
+    .support .s-label::after { content:''; width:28px; height:1px; background:var(--acid); }
+    .support .s-title { margin-bottom:20px; }
+    .support-desc { font-size:12px; color:var(--text); line-height:2; max-width:400px; margin-bottom:40px; }
+    .support-cta {
+      background:var(--acid); color:var(--black);
+      font-family:'Space Mono',monospace; font-weight:700;
+      font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+      padding:18px 40px; text-decoration:none;
+      transition:transform .2s, box-shadow .2s;
+      display:inline-flex; align-items:center; gap:12px;
+    }
+    @media(hover:hover) {
+      .support-cta:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(198,255,0,.3); }
+    }
 
     /* CONTACT */
     .contact { border-top:1px solid var(--line); display:grid; grid-template-columns:1fr 1fr; padding:0; }
@@ -406,8 +460,9 @@
       .prod-cta-strip { margin:-36px -24px -36px -24px; }
       .prod-card .bg-num { font-size:80px; }
       .prod-name { font-size:48px; }
+      .prod-card.full-width { flex-direction:column; align-items:flex-start; gap:24px; padding:36px 24px; }
       .s-title { margin-bottom:40px; }
-      .manifesto { padding:64px var(--px); }
+      .about { padding:64px var(--px); }
       .contact { grid-template-columns:1fr; }
       .contact-left { border-right:none; border-bottom:1px solid var(--line); padding:56px var(--px); }
       .contact-right { padding:56px var(--px); }
@@ -415,7 +470,6 @@
       .foot-links { gap:16px; }
     }
 
-    /* ── Small phones ── */
     @media(max-width:380px) {
       .hero-h1 { font-size:52px; }
       .mobile-menu a { font-size:38px; }
@@ -436,8 +490,8 @@
     <div class="logo-text">BAIT <em>IS THE</em> NAME</div>
   </a>
   <div class="nav-links">
-    <a href="#products">Products</a>
-    <a href="#studio">Studio</a>
+    <a href="#projects">Projects</a>
+    <a href="#about">About</a>
     <a href="#contact">Contact</a>
   </div>
   <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
@@ -447,8 +501,8 @@
 
 <!-- Mobile Drawer -->
 <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile navigation">
-  <a href="#products">Products</a>
-  <a href="#studio">Studio</a>
+  <a href="#projects">Projects</a>
+  <a href="#about">About</a>
   <a href="#contact">Contact</a>
 </nav>
 
@@ -457,48 +511,47 @@
   <div class="hero-slash"></div>
   <div class="hero-bg-text">BAIT</div>
   <div class="hero-content">
-    <div class="hero-eyebrow"><span></span>App Studio — bait.name</div>
+    <div class="hero-eyebrow"><span></span>Build / Solve / Help — bait.name</div>
     <h1 class="hero-h1">
-      WE BUILD
-      <span class="line2">THINGS</span>
-      <span class="line2">THAT HOOK.</span>
-      <span class="line3">Games · Tools · Android · iOS</span>
+      BUILD.
+      <span class="line2">SOLVE.</span>
+      <span class="line2">HELP.</span>
+      <span class="line3">Games · Apps · Charities · Others</span>
     </h1>
     <p class="hero-desc">
-      <strong>BAIT is the NAME</strong> is an independent studio building
-      apps people can't put down. We ship games, financial tools, and
-      utility apps — bold products with sharp design and real purpose.
+      Finding solutions to problems, building things, and helping whoever needs it.
     </p>
     <div class="hero-ctas">
-      <a href="#products" class="cta-main">
+      <a href="#projects" class="cta-main">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M1 11h12" stroke="#080808" stroke-width="1.5" stroke-linecap="round"/></svg>
-        See Our Products
+        See What I'm Building
       </a>
       <a href="#contact" class="cta-ghost">Get In Touch →</a>
     </div>
     <div class="hero-stats-mobile">
-      <div class="hstat"><div class="hstat-num">1</div><div class="hstat-label">Products</div></div>
-      <div class="hstat"><div class="hstat-num">0</div><div class="hstat-label">Compromises</div></div>
-      <div class="hstat"><div class="hstat-num">∞</div><div class="hstat-label">Ambition</div></div>
+      <div class="hstat"><div class="hstat-num">6</div><div class="hstat-label">Projects</div></div>
+      <div class="hstat"><div class="hstat-num">0</div><div class="hstat-label">Profit</div></div>
+      <div class="hstat"><div class="hstat-num">☕</div><div class="hstat-label">Fuelled by coffee</div></div>
     </div>
   </div>
   <div class="hero-stats">
-    <div class="hstat"><div class="hstat-num">1</div><div class="hstat-label">Products</div></div>
-    <div class="hstat"><div class="hstat-num">0</div><div class="hstat-label">Compromises</div></div>
-    <div class="hstat"><div class="hstat-num">∞</div><div class="hstat-label">Ambition</div></div>
+    <div class="hstat"><div class="hstat-num">6</div><div class="hstat-label">Projects</div></div>
+    <div class="hstat"><div class="hstat-num">0</div><div class="hstat-label">Profit</div></div>
+    <div class="hstat"><div class="hstat-num">☕</div><div class="hstat-label">Fuelled by coffee</div></div>
   </div>
 </div>
 
-<!-- PRODUCTS -->
-<section class="products" id="products">
-  <div class="s-label reveal">What We Ship</div>
-  <h2 class="s-title reveal">OUR<br>PRODUCTS.</h2>
+<!-- PROJECTS -->
+<section class="products" id="projects">
+  <div class="s-label reveal">What I'm Building</div>
+  <h2 class="s-title reveal">MY<br>PROJECTS.</h2>
   <div class="products-grid">
 
+    <!-- 01 Line Crush -->
     <a href="line-crush.html" class="prod-card game featured reveal">
       <div class="bg-num">01</div>
       <div class="prod-status live">Play Now</div>
-      <div class="prod-cat">Puzzle Game · Web · Android · iOS</div>
+      <div class="prod-cat">Game · Puzzle · Web · Android · iOS</div>
       <div class="prod-name">LINE<br>CRUSH</div>
       <p class="prod-desc">A satisfying block puzzle game. Drop pieces, clear lines, chain combos. Offline-first, no login, no nonsense — just the next move.</p>
       <div class="prod-tags">
@@ -515,42 +568,136 @@
       </div>
     </a>
 
-    <div class="prod-card future-card reveal">
+    <!-- 02 Paw Shelter -->
+    <div class="prod-card game reveal">
       <div class="bg-num">02</div>
-      <div class="prod-status future">In the Lab</div>
-      <div class="prod-cat">TBD · 2026</div>
-      <div class="prod-name" style="color:var(--muted);">NEXT<br>DROP.</div>
-      <p class="prod-desc">Something new is being built. We don't ship until it's right. Follow along at bait.name.</p>
-      <div class="prod-tags"><span class="prod-tag">????</span></div>
+      <div class="prod-status coming">In Progress</div>
+      <div class="prod-cat">Game · Mobile</div>
+      <div class="prod-name">PAW<br>SHELTER</div>
+      <p class="prod-desc">A mobile game where you rescue and care for dogs at a shelter. Feed them, play with them, find them forever homes.</p>
+      <div class="prod-tags">
+        <span class="prod-tag">Game</span>
+        <span class="prod-tag">Mobile</span>
+        <span class="prod-tag">Free</span>
+      </div>
+      <div class="prod-arrow">↗</div>
     </div>
+
+    <!-- 03 Tia Rosa Kitchen -->
+    <div class="prod-card game reveal">
+      <div class="bg-num">03</div>
+      <div class="prod-status coming">In Progress</div>
+      <div class="prod-cat">Game · Mobile</div>
+      <div class="prod-name">TIA ROSA<br>KITCHEN</div>
+      <p class="prod-desc">A cosy cooking game inspired by traditional recipes. Help Tia Rosa run her kitchen and serve up something delicious.</p>
+      <div class="prod-tags">
+        <span class="prod-tag">Game</span>
+        <span class="prod-tag">Mobile</span>
+        <span class="prod-tag">Free</span>
+      </div>
+      <div class="prod-arrow">↗</div>
+    </div>
+
+    <!-- 04 Spot It -->
+    <div class="prod-card game reveal">
+      <div class="bg-num">04</div>
+      <div class="prod-status coming">In Progress</div>
+      <div class="prod-cat">Game · Mobile</div>
+      <div class="prod-name">SPOT<br>IT</div>
+      <p class="prod-desc">A fast-paced pattern recognition game. Spot the match before the clock runs out. Simple to play, hard to put down.</p>
+      <div class="prod-tags">
+        <span class="prod-tag">Game</span>
+        <span class="prod-tag">Mobile</span>
+        <span class="prod-tag">Free</span>
+      </div>
+      <div class="prod-arrow">↗</div>
+    </div>
+
+    <!-- 05 Organiser -->
+    <div class="prod-card app reveal">
+      <div class="bg-num">05</div>
+      <div class="prod-status coming">In Progress</div>
+      <div class="prod-cat">App · Mobile</div>
+      <div class="prod-name">ORGANISER</div>
+      <p class="prod-desc">A no-nonsense life admin app. Keep track of what matters — bills, tasks, reminders — without the clutter.</p>
+      <div class="prod-tags">
+        <span class="prod-tag">App</span>
+        <span class="prod-tag">Mobile</span>
+        <span class="prod-tag">Free</span>
+      </div>
+      <div class="prod-arrow">↗</div>
+    </div>
+
+    <!-- 06 ByFabrico -->
+    <a href="https://byfabrico.com" target="_blank" rel="noopener" class="prod-card probono reveal">
+      <div class="bg-num">06</div>
+      <div class="prod-status ongoing">Ongoing</div>
+      <div class="prod-cat">Pro Bono · Others</div>
+      <div class="prod-name">BY<br>FABRICO</div>
+      <p class="prod-desc">Helping a friend's business with tech, for free. Because good work deserves support, not an invoice.</p>
+      <div class="prod-tags">
+        <span class="prod-tag">Pro Bono</span>
+        <span class="prod-tag">Web</span>
+        <span class="prod-tag">Free</span>
+      </div>
+      <div class="prod-arrow">↗</div>
+    </a>
+
+    <!-- 07 Your Project? -->
+    <a href="#contact" class="prod-card open-card full-width reveal">
+      <div class="prod-left">
+        <div class="prod-status future">Open</div>
+        <div class="prod-cat">Charities · Friends · Anyone</div>
+        <div class="prod-name" style="color:var(--muted); font-size:clamp(28px,3.5vw,44px);">GOT SOMETHING YOU NEED BUILT?</div>
+        <p class="prod-desc" style="margin-bottom:0;">I help for free — charities, friends, people who need it. If you have an idea or a problem, reach out.</p>
+      </div>
+      <a href="#contact" class="prod-cta-inline">Get in touch →</a>
+    </a>
 
   </div>
 </section>
 
-<!-- MANIFESTO -->
-<section class="manifesto" id="studio">
-  <div class="manifesto-line"></div>
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-line"></div>
   <div class="s-label reveal" style="justify-content:center;">
     <span style="width:28px;height:1px;background:var(--acid);display:inline-block;"></span>
-    Our Philosophy
+    Who I Am
     <span style="width:28px;height:1px;background:var(--acid);display:inline-block;"></span>
   </div>
-  <div class="manifesto-quote reveal">
-    GOOD APPS <em>DON'T</em><br>ASK FOR YOUR<br>ATTENTION.<br>THEY <em>EARN</em> IT.
-  </div>
-  <p class="manifesto-sub reveal">
-    We build lean, purposeful products — no filler features, no dark patterns.
-    Every app we ship solves a real problem and respects the person using it.
-    That's the BAIT standard.
+  <div class="about-quote reveal">THE<br><em>POINT.</em></div>
+  <p class="about-body reveal">
+    Games, apps, tools — built in spare time, shipped for free.
   </p>
-  <div class="manifesto-line"></div>
+  <div class="about-tags reveal">
+    <span class="about-tag">Dad</span>
+    <span class="about-tag">Husband</span>
+    <span class="about-tag">Builder of things</span>
+    <span class="about-tag">Solution focused</span>
+    <span class="about-tag">Not for profit</span>
+  </div>
+  <p class="about-sub reveal">
+    If you're a charity or a friend who needs something built,<br>reach out. I'll do my best to help.
+  </p>
+  <div class="about-line" style="margin-top:48px; margin-bottom:0;"></div>
+</section>
+
+<!-- SUPPORT -->
+<section class="support" id="support">
+  <div class="s-label reveal">Keep the lights on</div>
+  <h2 class="s-title reveal">LIKE WHAT<br>I DO?</h2>
+  <p class="support-desc reveal">
+    Everything here is free and always will be.<br>
+    If you want to say thanks, a coffee goes a long way.
+  </p>
+  <a href="https://buymeacoffee.com/b1t3my8b1t" target="_blank" rel="noopener" class="support-cta reveal">
+    ☕ Buy Me a Coffee
+  </a>
 </section>
 
 <!-- CONTACT -->
 <section class="contact" id="contact">
   <div class="contact-left">
-    <div class="s-label">Connect</div>
-    <h2 class="s-title" style="font-size:clamp(36px,5vw,64px);margin-bottom:48px;">STUDIO<br>INFO.</h2>
     <ul class="contact-list">
       <li class="contact-item reveal">
         <label>Website</label>
@@ -561,14 +708,14 @@
         <span><a href="mailto:hello@bait.name">hello@bait.name</a></span>
       </li>
       <li class="contact-item reveal">
-        <label>Platform</label>
-        <span>Android · iOS · Web</span>
+        <label>LinkedIn</label>
+        <span><a href="https://www.linkedin.com/in/bruno-a-cyber-security/" target="_blank" rel="noopener">linkedin.com/in/bruno-a-cyber-security</a></span>
       </li>
     </ul>
   </div>
   <div class="contact-right">
-    <h2 class="s-title">GOT AN<br>IDEA?</h2>
-    <p>We're always interested in talking to people building something real. Collab, feedback, press — drop us a line.</p>
+    <h2 class="s-title">NEED<br>HELP?</h2>
+    <p>Got a problem to solve, an app idea, or a charity that needs a hand? Drop me a message.</p>
     <a href="mailto:hello@bait.name">Send a message →</a>
   </div>
 </section>
@@ -577,15 +724,16 @@
 <footer>
   <div class="foot-logo">BAIT <em>IS THE</em> NAME</div>
   <ul class="foot-links">
-    <li><a href="#products">Products</a></li>
+    <li><a href="#projects">Projects</a></li>
     <li><a href="line-crush.html">Line Crush</a></li>
+    <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="foot-copy">© 2026 BAIT IS THE NAME — bait.name</div>
 </footer>
 
 <script>
-  /* Custom cursor — pointer devices only */
+  /* Custom cursor */
   const cur = document.getElementById('cur');
   if (window.matchMedia('(pointer: fine)').matches) {
     cur.style.display = 'block';
